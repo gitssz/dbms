@@ -1,0 +1,296 @@
+mysql> use five1;
+Database changed
+mysql> mysql> create table assigned(id varchar(20),emp_id varchar(20), foreign key(id) references project(id),foreign key(emp_id) references emp(emp_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'mysql> create table assigned(id varchar(20),emp_id varchar(20), foreign key(id) ' at line 1
+mysql>  create table assigned(id varchar(20),emp_id varchar(20), foreign key(id) references project(id),foreign key(emp_id) references emp(emp_id));
+ERROR 1824 (HY000): Failed to open the referenced table 'project'
+mysql> create table project(project_id varchar(4),project_name varchar(20),chief_arch varchar(20));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> create table add constraint primary key(project_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'add constraint primary key(project_id)' at line 1
+mysql> alter table add constraint primary key(project_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'add constraint primary key(project_id)' at line 1
+mysql> alter table project  add constraint primary key(project_id);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create table emp(emp_id varchar(4) primary key,emp_name varchar(20));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table assigned-to(project_id varchar(4),emp_id varchar(4),foreign key(project_id) references project(project_id),foreign key(emp_id) references emp(emp_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-to(project_id varchar(4),emp_id varchar(4),foreign key(project_id) references p' at line 1
+mysql> create table assigned_to(project_id varchar(4),emp_id varchar(4),foreign key(project_id) references project(project_id),foreign key(emp_id) references emp(emp_id));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> insert into project values('C353','Database','Lisa');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into project values('C354','AI','Lisa');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into project values('C355','ML','Lisa');
+Query OK, 1 row affected (0.04
+
+mysql> insert into project values('C453','ML','Hina');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into project values('C454','App dev','Hina');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into emp values('db1','gita');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into emp values('db1','sita');
+ERROR 1062 (23000): Duplicate entry 'db1' for key 'emp.PRIMARY'
+mysql> insert into emp values('db2','sita');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp values('db2','sita');
+ERROR 1062 (23000): Duplicate entry 'db2' for key 'emp.PRIMARY'
+mysql> insert into emp values('abc1','appor');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into emp values('abc2','pratiksh');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into emp values('abc3','shwe');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned values('C353','abc3');
+ERROR 1146 (42S02): Table 'five1.assigned' doesn't exist
+mysql> insert into assigned_to values('C353','abc3');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned_tovalues('C353','abc2');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned_to values('C354','abc2');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into assigned_to values('C354','abc3');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned_to values('C355','db2');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned_to values('C355','db1');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into assigned_to values('C453','db1');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into assigned_to values('C454','db2');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into assigned_to values('C454','db1');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select count(a.emp_id) from emp,assigned_to a where a. project_id='C353';
++-----------------+
+| count(a.emp_id) |
++-----------------+
+|              10 |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql> select count(emp.emp_id) from mp,assigned_to a where a. project_id='C353';
+
+| count(emp.emp_id) |
++-------------------+
+|                10 |
++-------------------+
+1 row in set (0.01 sec)
+
+mysql> select * from emp;
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+| abc1   | appor    |
+| abc2   | pratiksh |
+| abc3   | shwe     |
+| db1    | gita     |
+| db2    | sita     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from project;
++------------+--------------+------------+
+| project_id | project_name | chief_arch |
++------------+--------------+------------+
+| C353       | Database     | Lisa       |
+| C354       | AI           | Lisa       |
+| C355       | ML           | Lisa       |
+| C453       | ML           | Hina       |
+| C454       | App dev      | Hina       |
++------------+--------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from assigned;
+ERROR 1146 (42S02): Table 'five1.assigned' doesn't exist
+mysql> select * from assigned_to;
++------------+--------+
+| project_id | emp_id |
++------------+--------+
+| C353       | abc3   |
+| C353       | abc2   |
+| C354       | abc2   |
+| C354       | abc3   |
+| C355       | db2    |
+| C355       | db1    |
+| C453       | db1    |
+| C454       | db2    |
+| C454       | db1    |
++------------+--------+
+9 rows in set (0.00 sec)
+
+mysql> select count(*) from assigned_to;
++----------+
+| count(*) |
++----------+
+|        9 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select (emp.emp_id) from emp,assigned_to a where a. project_id='C353';
++--------+
+| emp_id |
++--------+
+| abc1   |
+| abc1   |
+| abc2   |
+| abc2   |
+| abc3   |
+| abc3   |
+| db1    |
+| db1    |
+| db2    |
+| db2    |
++--------+
+10 rows in set (0.00 sec)
+
+mysql> select (emp.emp_id),emp.emp_name from emp,assigned_to a where a. project_id='C353';
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+| abc1   | appor    |
+| abc1   | appor    |
+| abc2   | pratiksh |
+| abc2   | pratiksh |
+| abc3   | shwe     |
+| abc3   | shwe     |
+| db1    | gita     |
+| db1    | gita     |
+| db2    | sita     |
+| db2    | sita     |
++--------+----------+
+10 rows in set (0.00 sec)
+
+mysql> select (emp.emp_id),emp.emp_name,count(emp.emp_id) from emp,assigned_to a where a. project_id='C353';
+
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'five1.emp.emp_id'; this is incompatible with sql_mode=only_full_group_by
+mysql> select emp.emp_id,emp.emp_name,count(emp.emp_id) from emp,assigned_to a where a. project_id='C353';
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'five1.emp.emp_id'; this is incompatible with sql_mode=only_full_group_by
+mysql> select * from emp where project_name='database';
+ERROR 1054 (42S22): Unknown column 'project_name' in 'where clause'
+mysql> select * from assigned,project where project_name='database';
+ERROR 1146 (42S02): Table 'five1.assigned' doesn't exist
+mysql> select * from assigned_to,project where project_name='database';
++------------+--------+------------+--------------+------------+
+| project_id | emp_id | project_id | project_name | chief_arch |
++------------+--------+------------+--------------+------------+
+| C353       | abc3   | C353       | Database     | Lisa       |
+| C353       | abc2   | C353       | Database     | Lisa       |
+| C354       | abc2   | C353       | Database     | Lisa       |
+| C354       | abc3   | C353       | Database     | Lisa       |
+| C355       | db2    | C353       | Database     | Lisa       |
+| C355       | db1    | C353       | Database     | Lisa       |
+| C453       | db1    | C353       | Database     | Lisa       |
+| C454       | db2    | C353       | Database     | Lisa       |
+| C454       | db1    | C353       | Database     | Lisa       |
++------------+--------+------------+--------------+------------+
+9 rows in set (0.00 sec)
+
+mysql> select * from assigned_to natural join emp where project_id='C353';
++--------+------------+----------+
+| emp_id | project_id | emp_name |
++--------+------------+----------+
+| abc3   | C353       | shwe     |
+| abc2   | C353       | pratiksh |
++--------+------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from assigned_to natural join emp where project_name='database';
+ERROR 1054 (42S22): Unknown column 'project_name' in 'where clause'
+mysql> select * from project , natural join emp where project_name='database';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'natural join emp where project_name='database'' at line 1
+mysql> select * from project natural join emp where project_name='database';
++------------+--------------+------------+--------+----------+
+| project_id | project_name | chief_arch | emp_id | emp_name |
++------------+--------------+------------+--------+----------+
+| C353       | Database     | Lisa       | abc1   | appor    |
+| C353       | Database     | Lisa       | abc2   | pratiksh |
+| C353       | Database     | Lisa       | abc3   | shwe     |
+| C353       | Database     | Lisa       | db1    | gita     |
+| C353       | Database     | Lisa       | db2    | sita     |
++------------+--------------+------------+--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from emp where project_id='C353' and project_id='C354';
+ERROR 1054 (42S22): Unknown column 'project_id' in 'where clause'
+mysql> select * from emp,assigned where project_id='C353' and project_id='C354';
+ERROR 1146 (42S02): Table 'five1.assigned' doesn't exist
+mysql> select * from emp,assigned_to where project_id='C353' and project_id='C354';
+Empty set (0.00 sec)
+
+mysql> select emp_id , emp_name from emp natural join project where project_id='C353';
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+| abc1   | appor    |
+| abc2   | pratiksh |
+| abc3   | shwe     |
+| db1    | gita     |
+| db2    | sita     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select emp_id , emp_name from emp natural join project where project_id='C354';
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+| abc1   | appor    |
+| abc2   | pratiksh |
+| abc3   | shwe     |
+| db1    | gita     |
+| db2    | sita     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select emp_id , emp_name from emp natural join project where project_id='C354' and project_id='C354'; 
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+| abc1   | appor    |
+| abc2   | pratiksh |
+| abc3   | shwe     |
+| db1    | gita     |
+| db2    | sita     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select emp_id, count(emp_id) from project where project_id!='C453';
+ERROR 1054 (42S22): Unknown column 'emp_id' in 'field list'
+mysql> select emp_id, count(emp_id) from assigned_to where project_id!='C453';
+ERROR 1140 (42000): In aggregated query without GROUP BY, expression #1 of SELECT list contains nonaggregated column 'five1.assigned_to.emp_id'; this is incompatible with sql_mode=only_full_group_by
+mysql> select count(emp_id) from assigned_to where project_id!='C453';
++---------------+
+| count(emp_id) |
++---------------+
+|             8 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> 
+
+

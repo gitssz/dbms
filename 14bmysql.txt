@@ -1,0 +1,29 @@
+mysql> create procedure withd(in acc int, in amt int) begin declare bal int unsigned; select balance
+into bal from acc where acc_no=acc; if(amt>bal) then SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=' error : not enough balance'; else  update acc set balance=bal-amt where acc_no=acc; end if; end ;$
+ERROR 1304 (42000): PROCEDURE withd already exists
+
+mysql> create procedure w(in acc int, in amt int) begin declare bal int unsigned; select balance into bal from acc where acc_no=acc; if(amt>bal) then SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=' error : not enough balance'; else  update acc set balance=bal-amt where acc_no=acc; end if; end ;$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> call w(2,100000);
+    -> $
+Query OK, 1 row affected (0.04 sec)
+
+mysql> select * from acc;
+    -> $
++--------+---------+
+| acc_no | balance |
++--------+---------+
+|      1 |  100035 |
+|      2 |      35 |
+|      3 |   10065 |
+|      4 |     105 |
++--------+---------+
+4 rows in set (0.00 sec)
+
+mysql> delimiter ;
+mysql> call w(2,100000);
+ERROR 1644 (45000):  error : not enough balance
+mysql> 
+
+
