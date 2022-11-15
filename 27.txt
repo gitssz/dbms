@@ -1,41 +1,22 @@
+db.books.insertMany([{name:"A",pages:200},{name:"B",pages:300},{name:"C",pages:150},{name:"D",pages:100}]);
 
-test> use library
-switched to db library
-library> db.books.insertOne({name:'ikigai',pages:250,author:'smone'});
-{
-  acknowledged: true,
-  insertedId: ObjectId("6372771188f0aca4162682b7")
-}
-library> db.books.insertOne({name:'lust for life',pages:450,author:'irving stone'});
-{
-  acknowledged: true,
-  insertedId: ObjectId("6372772788f0aca4162682b8")
-}
-library> db.books.insertOne({author:'matt haig',pages:400,name:'midnnight library'});
-{
-  acknowledged: true,
-  insertedId: ObjectId("6372775b88f0aca4162682b9")
-}
-library> db.books.insertOne({author:'antoine',pages:100,name:'litle prince'});
-{
-  acknowledged: true,
-  insertedId: ObjectId("6372778088f0aca4162682ba")
-}
+var map = function() {  
+    var category;  
+    if ( this.pages >= 250 )   
+    category = 'Big Books';  
+    else   
+    category = "Small Books";  
+    emit(category, {name: this.name});  
+    };  
 
+var reduce = function(key, values) {  
+    var sum = 0;  
+    values.forEach(function(doc) {  
+    sum += 1;  
+    });  
+    return {books: sum};  
+    };  
 
-library> db[count.result].find()
-[ { _id: 'small books', value: { books: 4 } } ]
-library> var map =function(){ var category; if(this.pages>=250) category='Big books'; else category='small books' ;emit(category,{name:this.name});};
+db.books.mapReduce(map, reduce, {out: "book_results"});
 
-library> var reduce = function (key, values) { var sum = 0; values.forEach(function (doc) {sum += 1;}); return { books: sum }; };
-
-library> var count=db.books.mapReduce(map,reduce,{out:'book'});
-
-library> db[count.result].find()
-[
-  { _id: 'Big books', value: { books: 3 } },
-  { _id: 'small books', value: { books: 1 } }
-]
-library> 
-
-
+db.book_results.find();
